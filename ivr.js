@@ -14,7 +14,7 @@ var bodyParser = require('body-parser');
 app.use(express.static('public'));
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
-//app.use(bodyParser.json())
+app.use(bodyParser.json())
 
 app.set('port', (process.env.PORT || 8080))
 app.set('apikey', process.env.APIKEY )
@@ -56,9 +56,11 @@ app.post('/nextaction', function(request, response){
     }else{
         jsonResponse ={
             "action" : "play",
-            "message" : "Cat fact goes here",
+            "message" : nextCatFact,
             "id" : "catfact"
         };
+
+        getCatFact();
     }
 
     response.writeHead(200, {'Content-Type': 'text/json'});
@@ -102,3 +104,33 @@ app.post('/callme', function(request, response){
 
     response.redirect('/?success=true');
 })
+
+function getCatFact(){
+    console.log("Getting cat fact")
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: "catfacts-api.appspot.com",
+        port: 80,
+        path: "/api/facts",
+        method: 'GET'
+    };
+
+    // Set up the request
+    var post_req = http.request(post_options, function(res) {
+        var str = '';
+
+         //another chunk of data has been recieved, so append it to `str`
+         res.on('data', function (chunk) {
+           str += chunk;
+         });
+
+         res.on('end', function () {
+             nextCatFact = JSON.parse(str).facts[0]
+           console.log(nextCatFact);
+         });
+    });
+
+    post_req.end();
+}
+
+getCatFact()
