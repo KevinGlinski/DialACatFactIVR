@@ -14,7 +14,7 @@ var bodyParser = require('body-parser');
 app.use(express.static('public'));
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json())
+//app.use(bodyParser.json())
 
 app.set('port', (process.env.PORT || 8080))
 app.set('apikey', process.env.APIKEY )
@@ -28,6 +28,42 @@ app.listen(app.get('port'), function() {
     console.log("IVR is running at localhost:" + app.get('port'))
 })
 
+
+app.post('/nextaction', function(request, response){
+
+    console.log("next action called")
+
+    var lastDigits = request.body.lastdigitsreceived;
+
+    jsonResponse = {};
+
+
+    if(request.body.lastactionid == "catfact"){
+        jsonResponse ={
+            "action" : "play",
+            "message" : "Press 1 to hear another cat fact.",
+            "id" : "ivrmenu"
+        };
+    }else if(request.body.lastactionid == "ivrmenu"){
+        jsonResponse = {
+            "action" : "getdigits",
+            "number" : "getdigits"
+        }
+    }else if(request.body.lastactionid == "getdigits" && lastDigits != 1 ){
+        jsonResponse = {
+            "action" : "disconnect"
+        }
+    }else{
+        jsonResponse ={
+            "action" : "play",
+            "message" : "Cat fact goes here",
+            "id" : "catfact"
+        };
+    }
+
+    response.writeHead(200, {'Content-Type': 'text/json'});
+    response.end(JSON.stringify(jsonResponse));
+})
 
 app.get('/', function(request, response){
     response.sendFile(path.join(__dirname,"public/index.html"));
@@ -65,42 +101,4 @@ app.post('/callme', function(request, response){
     post_req.end();
 
     response.redirect('/?success=true');
-})
-
-
-app.post('/nextaction', function(request, response){
-
-    var lastDigits = request.body.lastdigitsreceived;
-
-
-    console.log(request.body.lastactionid)
-
-    jsonResponse = {};
-
-
-    if(request.body.lastactionid == "catfact"){
-        jsonResponse ={
-            "action" : "play",
-            "message" : "Press 1 to hear another cat fact.",
-            "id" : "ivrmenu"
-        };
-    }else if(request.body.lastactionid == "ivrmenu"){
-        jsonResponse = {
-            "action" : "getdigits",
-            "number" : "getdigits"
-        }
-    }else if(request.body.lastactionid == "getdigits" && lastDigits != 1 ){
-        jsonResponse = {
-            "action" : "disconnect"
-        }
-    }else{
-        jsonResponse ={
-            "action" : "play",
-            "message" : "Cat fact goes here",
-            "id" : "catfact"
-        };
-    }
-
-    response.writeHead(200, {'Content-Type': 'text/json'});
-    response.end(JSON.stringify(jsonResponse));
 })
