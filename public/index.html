@@ -57,8 +57,27 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-success" role="alert" id='callPlaced' style="display:none">Call placed</div>
+        </div>
+        <div class="col-md-4">
 
+        </div>
+    </div>
 
+<script type="text/javascript">
+function getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+if(getParameterByName("success") == "true"){
+    $('#callPlaced').show();
+}
+</script>
 </body>
 <!--http://www.quickmeme.com/meme/353ov7
 http://pixgood.com/cat-on-cell-phone.html
