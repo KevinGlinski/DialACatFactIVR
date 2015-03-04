@@ -29,6 +29,7 @@ app.listen(app.get('port'), function() {
 })
 
 
+//This is the handler that creates the IVR
 app.post('/nextaction', function(request, response){
 
     console.log("next action called")
@@ -38,6 +39,11 @@ app.post('/nextaction', function(request, response){
 
     jsonResponse = {};
 
+    //We want the ivr to flow like this
+    // 1) play fact
+    // 2) prompt for user to press 1
+    // 3) wait for digits to be entered
+    // 4) if 1 was entered, play another cat fact, otherwise disconnect the call
 
     if(request.body.lastactionid == "catfact"){
         jsonResponse ={
@@ -68,10 +74,12 @@ app.post('/nextaction', function(request, response){
     response.end(JSON.stringify(jsonResponse));
 })
 
+//handle root requests
 app.get('/', function(request, response){
     response.sendFile(path.join(__dirname,"public/index.html"));
 })
 
+//this handles the phone number form submit and then calls into the api to place a call to the number and put the call into the ivr
 app.post('/callme', function(request, response){
 
     console.log("callme " )
@@ -106,6 +114,7 @@ app.post('/callme', function(request, response){
     response.redirect('/?success=true');
 })
 
+//gets a cat fact from catfacts-api.appspot.com and stores it in a global variable. 
 function getCatFact(){
     console.log("Getting cat fact")
     // An object of options to indicate where to post to
@@ -134,4 +143,5 @@ function getCatFact(){
     post_req.end();
 }
 
+//the call to get a cat fact is async so we will cache a cat fact at startup and update it the next time it is used.
 getCatFact()
