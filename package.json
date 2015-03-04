@@ -1,0 +1,16 @@
+{
+    "name": "DialACatFactIVR",
+    "version": "0.0.1",
+    "description": "",
+    "main": "ivr.js",
+    "scripts": {
+        "start": "node ivr.js"
+    },
+    "dependencies": {
+        "express": "~4.9.x",
+        "request":"*",
+        "cors":"*",
+        "body-parser": "*"
+    },
+    "license": "MIT"
+}
