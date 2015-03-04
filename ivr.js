@@ -32,6 +32,7 @@ app.listen(app.get('port'), function() {
 app.post('/nextaction', function(request, response){
 
     console.log("next action called")
+    console.log(request.body)
 
     var lastDigits = request.body.lastdigitsreceived;
 
